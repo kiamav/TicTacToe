@@ -18,21 +18,23 @@ class Board:
 
     def _draw_x(self, x, y):
         # draws an X in the box with the top left coordinate (x,y)
-        x1 = x + self.offset
-        x2 = x + self.square_len - self.offset
-        y1 = y + self.offset
-        y2 = y + self.square_len - self.offset
+        x1, x2, y1, y2 = self._get_offset_coords(x, y)
         self.canvas.create_line(x1, y1, x2, y2, width=5)
         self.canvas.create_line(x1, y2, x2, y1, width=5)
 
     def _draw_circle(self, x, y):
         # draws an O in the box with the top left coordinate (x,y)
+        x1, x2, y1, y2 = self._get_offset_coords(x, y)
+        self.canvas.create_oval(x1, y1, x2, y2, width=1)
+
+    def _get_offset_coords(self, x, y):
+        # gets the offset coordinates for top left and bottom right of the square. where x,y is original top left
         x1 = x + self.offset
         x2 = x + self.square_len - self.offset
         y1 = y + self.offset
         y2 = y + self.square_len - self.offset
-        self.canvas.create_oval(x1, y1, x2, y2, width=1)
-
+        return x1, x2, y1, y2
+        
     def move(self, x, y):
         self.turn_to_shape[self.x_turn](x, y)
         self.x_turn = not self.x_turn
