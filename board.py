@@ -6,6 +6,8 @@ class Board:
         self.square_len = board_size / self.n
         self.offset = self.square_len * 0.1
         self.x_turn = True
+        # allows us to map from x_turn to the function to use for drawing shape based on whose turn it is
+        self.turn_to_shape = {True: self._draw_x, False: self._draw_circle}
         self._draw_board()
 
     def _draw_board(self):
@@ -32,8 +34,5 @@ class Board:
         self.canvas.create_oval(x1, y1, x2, y2, width=1)
 
     def move(self, x, y):
-        if self.x_turn:
-            self._draw_x(x, y)
-        else:
-            self._draw_circle(x, y)
+        self.turn_to_shape[self.x_turn](x, y)
         self.x_turn = not self.x_turn
