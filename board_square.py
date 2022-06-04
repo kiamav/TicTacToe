@@ -7,11 +7,12 @@ class BoardSquare:
         self._canvas = canvas
         self._square_len = square_len
         self._offset = self._square_len * 0.1
+        self._x, self._y = x, y
         self._x1, self._x2, self._y1, self._y2 = self._get_offset_coords(x, y)
         # allows us to map from x_turn to the function to use for drawing shape based on whose turn it is
         self._turn_to_shape = {True: self._draw_x, False: self._draw_circle}
 
-    def fill_square(self, is_x) -> bool:
+    def place_marker(self, is_x) -> bool:
         # return if the move is valid or not
         if not self.is_filled:
             self.is_filled = True
@@ -27,6 +28,12 @@ class BoardSquare:
     def _draw_circle(self):
         self._canvas.create_oval(self._x1, self._y1, self._x2, self._y2, width=1)
 
+    def fill_square(self):
+        self._canvas.create_rectangle(self._x, self._y, self._x + self._square_len, self._y + self._square_len,
+                                      fill="green", width=5)
+        # draw the marker again after filling the square
+        self._turn_to_shape[self.is_x]()
+
     def _get_offset_coords(self, x, y):
         # gets the offset coordinates for top left and bottom right of the square. where x,y is original top left
         x1 = x + self._offset
@@ -34,4 +41,3 @@ class BoardSquare:
         y1 = y + self._offset
         y2 = y + self._square_len - self._offset
         return x1, x2, y1, y2
-

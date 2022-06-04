@@ -33,7 +33,7 @@ class Board:
             grid_i = int(event.x // self._square_len)
             grid_j = int(event.y // self._square_len)
             board_square: BoardSquare = self._grid[grid_i][grid_j]
-            is_valid_move = board_square.fill_square(self._x_turn)
+            is_valid_move = board_square.place_marker(self._x_turn)
             if is_valid_move:
                 self._filled_squares += 1
                 self._x_turn = not self._x_turn
@@ -51,15 +51,24 @@ class Board:
         # check if the game has been won by filling the square at i,j
         # do bfs in each of the 4 directions, vertical, horizontal, and both diagonals
         for direction in self._direction_mappings:
-            if self._bfs(i, j, direction):
+            game_over, visited = self._bfs(i, j, direction)
+            if game_over:
                 self._game_over = True
+                self._fill_visited_squares(visited)
+
+    def _fill_visited_squares(self, visited):
+        # color in the winning line
+        for i in range(self._n):
+            for j in range(self._n):
+                if visited[i][j]:
+                    self._grid[i][j].fill_square()
 
     def _check_if_game_tied(self):
         if self._filled_squares == self._n ** 2:
             print("THE GAME ENDED IN A TIE!")
             self._game_over = True
 
-    def _bfs(self, i, j, direction) -> bool:
+    def _bfs(self, i, j, direction):
         # returns whether the game has been won or not
         visited = [[False for _ in range(self._n)] for _ in range(self._n)]
         q = [(i, j, direction)]
@@ -71,13 +80,13 @@ class Board:
                 continue
             if self._grid[i][j].is_filled and self._grid[i][j].is_x == starting_is_x:
                 count += 1
+                visited[i][j] = True
                 if count == self._needed_to_win:
                     print("THE GAME HAS BEEN WON!")
-                    return True
-                visited[i][j] = True
+                    return True, visited
                 for d_x, d_y in self._direction_mappings[direction]:
                     q.append((i + d_x, j + d_y, direction))
-        return False
+        return False, visited
 
 
 
