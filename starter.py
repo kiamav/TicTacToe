@@ -1,4 +1,4 @@
-from tkinter import *
+from tkinter import Tk, Canvas
 from board import Board
 
 BOARD_SIZE = 1000
