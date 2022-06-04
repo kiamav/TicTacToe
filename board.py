@@ -24,7 +24,7 @@ class Board:
         self._draw_board()
         self._canvas.bind(self.LEFT_CLICK_BIND, self.move)
         # keep track of how many squares have been filled in case of tie game
-        self.filled_squares = 0
+        self._filled_squares = 0
 
     def _draw_board(self):
         for i in range(1, self._n):
@@ -41,9 +41,11 @@ class Board:
             board_square: BoardSquare = self._grid[grid_i][grid_j]
             is_valid_move = board_square.fill_square(self._x_turn)
             if is_valid_move:
-                self.filled_squares += 1
+                self._filled_squares += 1
                 self._x_turn = not self._x_turn
                 self._check_if_game_won(grid_i, grid_j)
+                if not self._game_over:
+                    self._check_if_game_tied()
 
     def _check_if_game_won(self, i, j):
         # check if the game has been won by filling the square at i,j
@@ -51,6 +53,11 @@ class Board:
         for direction in self._direction_mappings:
             if self._bfs(i, j, direction):
                 self._game_over = True
+
+    def _check_if_game_tied(self):
+        if self._filled_squares == self._n ** 2:
+            print("THE GAME ENDED IN A TIE!")
+            self._game_over = True
 
     def _bfs(self, i, j, direction) -> bool:
         # returns whether the game has been won or not
