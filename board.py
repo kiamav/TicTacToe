@@ -18,11 +18,8 @@ class Board:
         self.canvas.pack()
 
     def _init_grid(self):
-        grid = [[None for _ in range(self.n)] for _ in range(self.n)]
-        for i in range(self.n):
-            for j in range(self.n):
-                grid[i][j] = BoardSquare(self.square_len*i, self.square_len*j, self.canvas, self.square_len)
-        self.grid = grid
+        self.grid = [[BoardSquare(self.square_len*i, self.square_len*j, self.canvas, self.square_len)
+                      for j in range(self.n)] for i in range(self.n)]
 
     def move(self, x, y):
         # place an X or O at x,y coordinate square based on whose turn it is
