@@ -26,12 +26,6 @@ class Board:
         # keep track of how many squares have been filled in case of tie game
         self._filled_squares = 0
 
-    def _draw_board(self):
-        for i in range(1, self._n):
-            self._canvas.create_line(self._square_len * i, 0, self._square_len * i, self._board_size, width=5)
-            self._canvas.create_line(0, self._square_len * i, self._board_size, self._square_len * i, width=5)
-        self._canvas.pack()
-
     def move(self, event):
         # we get a callback to this method when the left mouse is clicked. the event contains
         # the x,y coord of where was clicked within the canvas
@@ -46,6 +40,12 @@ class Board:
                 self._check_if_game_won(grid_i, grid_j)
                 if not self._game_over:
                     self._check_if_game_tied()
+
+    def _draw_board(self):
+        for i in range(1, self._n):
+            self._canvas.create_line(self._square_len * i, 0, self._square_len * i, self._board_size, width=5)
+            self._canvas.create_line(0, self._square_len * i, self._board_size, self._square_len * i, width=5)
+        self._canvas.pack()
 
     def _check_if_game_won(self, i, j):
         # check if the game has been won by filling the square at i,j
