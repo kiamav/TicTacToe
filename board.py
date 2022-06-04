@@ -1,13 +1,14 @@
+from board_square import BoardSquare
+
+
 class Board:
     def __init__(self, canvas, board_size, n):
         self.canvas = canvas
         self.board_size = board_size
         self.n = n
         self.square_len = board_size / self.n
-        self.offset = self.square_len * 0.1
         self.x_turn = True
-        # allows us to map from x_turn to the function to use for drawing shape based on whose turn it is
-        self.turn_to_shape = {True: self._draw_x, False: self._draw_circle}
+        self._init_grid()
         self._draw_board()
 
     def _draw_board(self):
@@ -16,25 +17,18 @@ class Board:
             self.canvas.create_line(0, self.square_len * i, self.board_size, self.square_len * i, width=5)
         self.canvas.pack()
 
-    def _draw_x(self, x, y):
-        # draws an X in the box with the top left coordinate (x,y)
-        x1, x2, y1, y2 = self._get_offset_coords(x, y)
-        self.canvas.create_line(x1, y1, x2, y2, width=5)
-        self.canvas.create_line(x1, y2, x2, y1, width=5)
+    def _init_grid(self):
+        grid = [[None for _ in range(self.n)] for _ in range(self.n)]
+        for i in range(self.n):
+            for j in range(self.n):
+                grid[i][j] = BoardSquare(self.square_len*i, self.square_len*j, self.canvas, self.square_len)
+        self.grid = grid
 
-    def _draw_circle(self, x, y):
-        # draws an O in the box with the top left coordinate (x,y)
-        x1, x2, y1, y2 = self._get_offset_coords(x, y)
-        self.canvas.create_oval(x1, y1, x2, y2, width=1)
-
-    def _get_offset_coords(self, x, y):
-        # gets the offset coordinates for top left and bottom right of the square. where x,y is original top left
-        x1 = x + self.offset
-        x2 = x + self.square_len - self.offset
-        y1 = y + self.offset
-        y2 = y + self.square_len - self.offset
-        return x1, x2, y1, y2
-        
     def move(self, x, y):
-        self.turn_to_shape[self.x_turn](x, y)
-        self.x_turn = not self.x_turn
+        # place an X or O at x,y coordinate square based on whose turn it is
+        grid_i = int(x//self.square_len)
+        grid_j = int(y//self.square_len)
+        board_square: BoardSquare = self.grid[grid_i][grid_j]
+        is_valid_move = board_square.move(self.x_turn)
+        if is_valid_move:
+            self.x_turn = not self.x_turn

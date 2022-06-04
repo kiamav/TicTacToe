@@ -13,11 +13,7 @@ board = Board(canvas, BOARD_SIZE, NUM_SQUARES)
 
 
 def test_event(event):
-	x = event.x
-	y = event.y
-	top_left_x = x - (x % SQUARE_LEN)
-	top_left_y = y - (y % SQUARE_LEN)
-	board.move(top_left_x, top_left_y)
+	board.move(event.x, event.y)
 
 
 canvas.bind('<Button-1>', test_event)
