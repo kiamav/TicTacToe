@@ -3,7 +3,7 @@ from board import Board
 
 BOARD_SIZE = 1000
 # number of squares in width/length. total num squares is NUM_SQUARES^2
-NUM_SQUARES = 3
+NUM_SQUARES = 10
 
 root = Tk()
 canvas = Canvas(width=BOARD_SIZE, height=BOARD_SIZE)
