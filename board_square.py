@@ -1,4 +1,5 @@
 class BoardSquare:
+
     def __init__(self, x, y, canvas, square_len):
         # x, y corresponds to top left point of the square x,y coords in the canvas
         self.is_filled = False
