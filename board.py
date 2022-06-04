@@ -2,16 +2,19 @@ from board_square import BoardSquare
 
 
 class Board:
+
+    LEFT_CLICK_BIND = '<Button-1>'
+
     def __init__(self, canvas, board_size, n):
         self._canvas = canvas
         self._board_size = board_size
         self._n = n
         self._square_len = board_size / self._n
         self._x_turn = True
-        self.grid = [[BoardSquare(self._square_len * i, self._square_len * j, self._canvas, self._square_len)
-                      for j in range(self._n)] for i in range(self._n)]
+        self._grid = [[BoardSquare(self._square_len * i, self._square_len * j, self._canvas, self._square_len)
+                       for j in range(self._n)] for i in range(self._n)]
         self._draw_board()
-        self._canvas.bind('<Button-1>', self.move)
+        self._canvas.bind(self.LEFT_CLICK_BIND, self.move)
 
     def _draw_board(self):
         for i in range(1, self._n):
@@ -24,7 +27,7 @@ class Board:
         # the x,y coord of where was clicked within the canvas
         grid_i = int(event.x // self._square_len)
         grid_j = int(event.y // self._square_len)
-        board_square: BoardSquare = self.grid[grid_i][grid_j]
+        board_square: BoardSquare = self._grid[grid_i][grid_j]
         is_valid_move = board_square.fill_square(self._x_turn)
         if is_valid_move:
             self._x_turn = not self._x_turn

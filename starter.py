@@ -8,6 +8,4 @@ NUM_SQUARES = 3
 root = Tk()
 canvas = Canvas(width=BOARD_SIZE, height=BOARD_SIZE)
 board = Board(canvas, BOARD_SIZE, NUM_SQUARES)
-
-
 root.mainloop()
