@@ -5,7 +5,7 @@ class Board:
 
     LEFT_CLICK_BIND = '<Button-1>'
 
-    def __init__(self, canvas, board_size, n, needed_to_win=5):
+    def __init__(self, canvas, board_size, n, needed_to_win=3):
         self._canvas = canvas
         self._board_size = board_size
         self._n = n
