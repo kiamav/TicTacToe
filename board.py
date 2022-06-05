@@ -22,7 +22,7 @@ class Board:
     }
     PLAYER_TO_MARKER = {True: 'X', False: 'O'}
 
-    def __init__(self, root, canvas, board_size, n, needed_to_win=3):
+    def __init__(self, root, canvas, board_size, n, needed_to_win):
         self._root = root
         self._canvas = canvas
         self._board_size = board_size
@@ -48,10 +48,10 @@ class Board:
             is_valid_move = board_square.place_marker(self._x_turn)
             if is_valid_move:
                 self._filled_squares += 1
+                self._x_turn = not self._x_turn
                 self._check_if_game_won(grid_i, grid_j)
                 if not self._game_over:
                     self._check_if_game_tied()
-                self._x_turn = not self._x_turn
 
     def _reset(self):
         self._canvas.delete(self.TKINTER_DELETE_ALL)
@@ -72,7 +72,8 @@ class Board:
                 self._game_over = True
                 self._fill_visited_squares(visited)
                 self._root.update()
-                winner_message = self.WINNER_GAME_MESSAGE.format(self.PLAYER_TO_MARKER[self._x_turn])
+                # we use not self._x_turn because before the call to _check_if_game_won() we switched the _x_turn var
+                winner_message = self.WINNER_GAME_MESSAGE.format(self.PLAYER_TO_MARKER[not self._x_turn])
                 self._ask_game_over_question(self.GAME_OVER_TITLE, winner_message)
 
     def _ask_game_over_question(self, title, message):
