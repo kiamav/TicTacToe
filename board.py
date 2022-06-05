@@ -6,9 +6,11 @@ from board_square import BoardSquare
 class Board:
 
     LEFT_CLICK_BIND = '<Button-1>'
+    TKINTER_DELETE_ALL = 'all'
+    TKINTER_QUESTION_YES = 'yes'
     GAME_OVER_TITLE = 'Game Over!'
-    TIE_GAME_MESSAGE = 'The game has ended in a tie!'
-    WINNER_GAME_MESSAGE = 'Congratulations to player {}! You won!'
+    TIE_GAME_MESSAGE = 'The game has ended in a tie! Play Another?'
+    WINNER_GAME_MESSAGE = 'Congratulations to player {}! You won! Play Another?'
     # maps from direction to relative position.
     # H -> horizontal, V -> vertical
     # / -> diagonal , \ -> other diagonal
@@ -25,8 +27,8 @@ class Board:
         self._canvas = canvas
         self._board_size = board_size
         self._n = n
-        self._game_over = False
         self._needed_to_win = needed_to_win
+        self._game_over = False
         self._square_len = board_size / self._n
         self._x_turn = True
         self._grid = [[BoardSquare(self._square_len * i, self._square_len * j, self._canvas, self._square_len)
@@ -51,6 +53,10 @@ class Board:
                     self._check_if_game_tied()
                 self._x_turn = not self._x_turn
 
+    def _reset(self):
+        self._canvas.delete(self.TKINTER_DELETE_ALL)
+        self.__init__(self._root, self._canvas, self._board_size, self._n, self._needed_to_win)
+
     def _draw_board(self):
         for i in range(1, self._n):
             self._canvas.create_line(self._square_len * i, 0, self._square_len * i, self._board_size, width=5)
@@ -66,8 +72,14 @@ class Board:
                 self._game_over = True
                 self._fill_visited_squares(visited)
                 self._root.update()
-                message = self.WINNER_GAME_MESSAGE.format(self.PLAYER_TO_MARKER[self._x_turn])
-                messagebox.showinfo(title=self.GAME_OVER_TITLE, message=message)
+                winner_message = self.WINNER_GAME_MESSAGE.format(self.PLAYER_TO_MARKER[self._x_turn])
+                self._ask_game_over_question(self.GAME_OVER_TITLE, winner_message)
+
+    def _ask_game_over_question(self, title, message):
+        if messagebox.askquestion(title, message) == self.TKINTER_QUESTION_YES:
+            self._reset()
+        else:
+            self._root.destroy()
 
     def _fill_visited_squares(self, visited):
         # color in the winning line
@@ -80,7 +92,7 @@ class Board:
         if self._filled_squares == self._n ** 2:
             self._game_over = True
             self._root.update()
-            messagebox.showinfo(title=self.GAME_OVER_TITLE, message=self.TIE_GAME_MESSAGE)
+            self._ask_game_over_question(self.GAME_OVER_TITLE, self.TIE_GAME_MESSAGE)
 
     def _bfs(self, i, j, direction):
         # returns whether the game has been won or not
@@ -96,7 +108,6 @@ class Board:
                 count += 1
                 visited[i][j] = True
                 if count == self._needed_to_win:
-                    print("THE GAME HAS BEEN WON!")
                     return True, visited
                 for d_x, d_y in self.DIRECTION_MAPPINGS[direction]:
                     q.append((i + d_x, j + d_y, direction))
