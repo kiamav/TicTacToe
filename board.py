@@ -4,6 +4,15 @@ from board_square import BoardSquare
 class Board:
 
     LEFT_CLICK_BIND = '<Button-1>'
+    # maps from direction to relative position.
+    # H -> horizontal, V -> vertical
+    # / -> diagonal , \ -> other diagonal
+    DIRECTION_MAPPINGS = {
+        'H': [(1, 0), (-1, 0)],
+        'V': [(0, 1), (0, -1)],
+        '/': [(1, -1), (-1, 1)],
+        '\\': [(1, 1), (-1, -1)]
+    }
 
     def __init__(self, canvas, board_size, n, needed_to_win=3):
         self._canvas = canvas
@@ -13,12 +22,6 @@ class Board:
         self._needed_to_win = needed_to_win
         self._square_len = board_size / self._n
         self._x_turn = True
-        self._direction_mappings = {
-                                    'H': [(1, 0), (-1, 0)],
-                                    'V': [(0, 1), (0, -1)],
-                                    '/': [(1, -1), (-1, 1)],
-                                    '\\': [(1, 1), (-1, -1)]
-                                    }
         self._grid = [[BoardSquare(self._square_len * i, self._square_len * j, self._canvas, self._square_len)
                        for j in range(self._n)] for i in range(self._n)]
         self._draw_board()
@@ -50,7 +53,7 @@ class Board:
     def _check_if_game_won(self, i, j):
         # check if the game has been won by filling the square at i,j
         # do bfs in each of the 4 directions, vertical, horizontal, and both diagonals
-        for direction in self._direction_mappings:
+        for direction in self.DIRECTION_MAPPINGS:
             game_over, visited = self._bfs(i, j, direction)
             if game_over:
                 self._game_over = True
@@ -84,7 +87,7 @@ class Board:
                 if count == self._needed_to_win:
                     print("THE GAME HAS BEEN WON!")
                     return True, visited
-                for d_x, d_y in self._direction_mappings[direction]:
+                for d_x, d_y in self.DIRECTION_MAPPINGS[direction]:
                     q.append((i + d_x, j + d_y, direction))
         return False, visited
 
