@@ -1,9 +1,14 @@
+from tkinter import messagebox
+
 from board_square import BoardSquare
 
 
 class Board:
 
     LEFT_CLICK_BIND = '<Button-1>'
+    GAME_OVER_TITLE = 'Game Over!'
+    TIE_GAME_MESSAGE = 'The game has ended in a tie!'
+    WINNER_GAME_MESSAGE = 'Congratulations to player {}! You won!'
     # maps from direction to relative position.
     # H -> horizontal, V -> vertical
     # / -> diagonal , \ -> other diagonal
@@ -13,8 +18,10 @@ class Board:
         '/': [(1, -1), (-1, 1)],
         '\\': [(1, 1), (-1, -1)]
     }
+    PLAYER_TO_MARKER = {True: 'X', False: 'O'}
 
-    def __init__(self, canvas, board_size, n, needed_to_win=3):
+    def __init__(self, root, canvas, board_size, n, needed_to_win=3):
+        self._root = root
         self._canvas = canvas
         self._board_size = board_size
         self._n = n
@@ -39,10 +46,10 @@ class Board:
             is_valid_move = board_square.place_marker(self._x_turn)
             if is_valid_move:
                 self._filled_squares += 1
-                self._x_turn = not self._x_turn
                 self._check_if_game_won(grid_i, grid_j)
                 if not self._game_over:
                     self._check_if_game_tied()
+                self._x_turn = not self._x_turn
 
     def _draw_board(self):
         for i in range(1, self._n):
@@ -58,6 +65,9 @@ class Board:
             if game_over:
                 self._game_over = True
                 self._fill_visited_squares(visited)
+                self._root.update()
+                message = self.WINNER_GAME_MESSAGE.format(self.PLAYER_TO_MARKER[self._x_turn])
+                messagebox.showinfo(title=self.GAME_OVER_TITLE, message=message)
 
     def _fill_visited_squares(self, visited):
         # color in the winning line
@@ -68,8 +78,9 @@ class Board:
 
     def _check_if_game_tied(self):
         if self._filled_squares == self._n ** 2:
-            print("THE GAME ENDED IN A TIE!")
             self._game_over = True
+            self._root.update()
+            messagebox.showinfo(title=self.GAME_OVER_TITLE, message=self.TIE_GAME_MESSAGE)
 
     def _bfs(self, i, j, direction):
         # returns whether the game has been won or not

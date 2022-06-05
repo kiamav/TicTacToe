@@ -8,5 +8,5 @@ NEEDED_TO_WIN = 3
 
 root = Tk()
 canvas = Canvas(width=BOARD_SIZE, height=BOARD_SIZE)
-board = Board(canvas, BOARD_SIZE, DIMENSIONS, NEEDED_TO_WIN)
+board = Board(root, canvas, BOARD_SIZE, DIMENSIONS, NEEDED_TO_WIN)
 root.mainloop()
