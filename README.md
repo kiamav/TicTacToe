@@ -8,7 +8,7 @@ as well as how many squares are needed in a row to win the game.
 
 1) Install python3 on your machine. I am personally using python3.8 but any python3 version should do. On mac you can run the command below:
 ```sh
-$ brew install python@3.8
+brew install python@3.8
 ```
 2) Run the starter.py script and enjoy the game!
 
