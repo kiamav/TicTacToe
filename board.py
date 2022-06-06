@@ -31,12 +31,12 @@ class Board:
         self._game_over = False
         self._square_len = board_size / self._n
         self._x_turn = True
+        # keep track of how many squares have been filled in case of tie game
+        self._filled_squares = 0
         self._grid = [[BoardSquare(self._square_len * i, self._square_len * j, self._canvas, self._square_len)
                        for j in range(self._n)] for i in range(self._n)]
         self._draw_board()
         self._canvas.bind(self.LEFT_CLICK_BIND, self.move)
-        # keep track of how many squares have been filled in case of tie game
-        self._filled_squares = 0
 
     def move(self, event):
         # we get a callback to this method when the left mouse is clicked. the event contains
