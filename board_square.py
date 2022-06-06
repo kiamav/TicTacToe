@@ -1,5 +1,7 @@
 class BoardSquare:
 
+    TKINTER_GREEN = 'green'
+
     def __init__(self, x, y, canvas, square_len):
         # x, y corresponds to top left point of the square x,y coords in the canvas
         self.is_filled = False
@@ -21,18 +23,18 @@ class BoardSquare:
             return True
         return False
 
+    def fill_square(self):
+        self._canvas.create_rectangle(self._x, self._y, self._x + self._square_len, self._y + self._square_len,
+                                      fill=self.TKINTER_GREEN, width=5)
+        # draw the marker again after filling the square
+        self._turn_to_shape[self.is_x]()
+
     def _draw_x(self):
         self._canvas.create_line(self._x1, self._y1, self._x2, self._y2, width=5)
         self._canvas.create_line(self._x1, self._y2, self._x2, self._y1, width=5)
 
     def _draw_circle(self):
         self._canvas.create_oval(self._x1, self._y1, self._x2, self._y2, width=1)
-
-    def fill_square(self):
-        self._canvas.create_rectangle(self._x, self._y, self._x + self._square_len, self._y + self._square_len,
-                                      fill="green", width=5)
-        # draw the marker again after filling the square
-        self._turn_to_shape[self.is_x]()
 
     def _get_offset_coords(self, x, y):
         # gets the offset coordinates for top left and bottom right of the square. where x,y is original top left
